@@ -9,6 +9,25 @@ description: Use when reviewing Douyin/TikTok China mini-game submission materia
 
 Audit the actual submission package first, then use project scanning only as supporting evidence. Do not treat a full Unity, Godot, or HTML project as a substitute for the final backend submission text and assets.
 
+## Daily Update Check
+
+At the start of the first `douyin-minigame-audit` use each local day, run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "<skill-dir>/scripts/check-update.ps1" -Install
+```
+
+- If the script reports `up_to_date`, continue normally.
+- If the script reports `installed`, stop the audit flow and tell the user:
+  - A newer `douyin-minigame-audit` was downloaded and installed.
+  - Codex or the current AI client must be restarted to load the new skill files.
+  - After restarting, return to this conversation and say `继续`; the skill will reuse saved audit input/state and continue the unfinished flow.
+- If the script reports `skipped_today`, continue normally.
+- If the script reports `remote_version_missing`, continue normally and mention that the remote repository has not published `VERSION` yet.
+- If the script reports `failed`, continue the audit with the local version and mention the update-check failure briefly.
+
+Before installing an update, preserve active audit state by saving the current YAML/Markdown input with `scripts/save-audit-input.ps1` when practical.
+
 ## Required Source Loading
 
 - Read `references/official-norms.md` before every audit.
@@ -35,6 +54,7 @@ Audit the actual submission package first, then use project scanning only as sup
 - If neither directory exists, save under the current workspace `.douyin-minigame-audit/`.
 - Use `scripts/save-audit-input.ps1` for deterministic saving when practical.
 - Tell the user where the saved file is, so future audits can reuse it.
+- When resuming after restart, search for saved audit input and `last-report.md`/`session-state.md` in `.douyin-minigame-audit/`, then continue from the last unfinished step.
 
 ## Expected Chinese YAML Shape
 
