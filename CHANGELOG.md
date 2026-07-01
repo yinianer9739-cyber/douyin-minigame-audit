@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 - 2026-07-01
+
+- Add Chinese trigger phrases to `SKILL.md` discovery metadata.
+- Document common trigger phrases in `README.md`.
+
 ## 0.2.0 - 2026-07-01
 
 - Add daily update check support through `scripts/check-update.ps1`.

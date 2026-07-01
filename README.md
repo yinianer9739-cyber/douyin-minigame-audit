@@ -24,6 +24,23 @@ C:\Users\<YourUser>\.codex\skills\douyin-minigame-audit
 
 Restart Codex or your current AI client after installation.
 
+## Trigger Phrases
+
+You can invoke the skill explicitly:
+
+```text
+Use $douyin-minigame-audit to review my submission.
+```
+
+Common Chinese trigger phrases:
+
+```text
+启动抖音提审
+抖音小游戏提审
+检查抖音过审风险
+帮我审核抖音小游戏
+```
+
 ## Typical Input
 
 Use the Chinese YAML template:

@@ -1,6 +1,6 @@
 ---
 name: douyin-minigame-audit
-description: Use when reviewing Douyin/TikTok China mini-game submission materials, Chinese YAML/Markdown audit inputs, Unity/Godot/HTML project folders, asset packages, icons, screenshots, ads, IAP, anchors, qualifications, age rating, content, behavior, or official Douyin mini-game approval/compliance risks before submission.
+description: Use when reviewing Douyin/TikTok China mini-game submission materials, Chinese YAML/Markdown audit inputs, Unity/Godot/HTML project folders, asset packages, icons, screenshots, ads, IAP, anchors, qualifications, age rating, content, behavior, official Douyin mini-game approval/compliance risks, or Chinese triggers like 启动抖音提审, 抖音小游戏提审, 检查抖音过审风险, 帮我审核抖音小游戏.
 ---
 
 # Douyin Mini-Game Audit
