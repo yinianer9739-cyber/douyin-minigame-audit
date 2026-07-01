@@ -49,6 +49,13 @@ Use the Chinese YAML template:
 assets/audit-input.zh.yaml
 ```
 
+The YAML template includes:
+
+- Explicit local path fields such as `图标路径`, `截图路径列表`, `视频封面路径列表`, `宣传视频路径列表`, `资料包目录路径`, and `工程项目目录路径`.
+- Copywriting guidance, including short description length hints and a 120-300 character detailed description hint.
+- Official option references for game category, theme, art style, and age rating.
+- Inline hints such as `参考下方：官方选项参考 > 题材可选` for fields that should be selected from official options.
+
 Recommended saved location for a real project:
 
 ```text

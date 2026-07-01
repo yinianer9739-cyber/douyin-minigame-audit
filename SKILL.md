@@ -60,13 +60,14 @@ Before installing an update, preserve active audit state by saving the current Y
 
 Use `assets/audit-input.zh.yaml` as the canonical template. Accept Markdown with equivalent headings, but normalize mentally to these sections:
 
-- `游戏信息`: name, soft copyright name, version, engine, platform, category, art style, age rating.
-- `提审文案`: short description, detailed description, update notes, keywords.
-- `目录`: package directory, project directory, build output directory.
-- `素材`: icon, screenshots, video covers, promotional videos, loading image, posters.
+- `游戏信息`: `游戏名称`, `软著名称`, `备案名称`, `版号名称`, `版本号`, engine, platform, official category levels, theme, art style, and age rating.
+- `提审文案`: `一句话简介`, `详细介绍`, update notes, keywords, and copywriting length hints.
+- `目录`: local path fields such as `资料包目录路径`, `工程项目目录路径`, and `构建产物目录路径`.
+- `素材`: local path fields such as `图标路径`, `截图路径列表`, `视频封面路径列表`, `宣传视频路径列表`, `加载图路径`, and `海报路径列表`.
 - `能力与玩法`: ads, IAP, login, ranking, share, chat, UGC, location, payment, privacy collection, minors, multiplayer.
-- `资质与合规`: copyright, ISBN/approval number if any, filing, business licenses, privacy policy, user agreement.
+- `资质与合规`: local path fields for software copyright, ISBN/approval document, filing materials, business licenses, privacy policy, user agreement, and authorization files.
 - `运营与变现`: CPA/CPT/CPM/CPS anchors, advertising game, in-game purchase game, traffic promotion, game station, Jianying template.
+- `官方选项参考`: official reference options for category, theme, art style, and age rating; use it to interpret fields that say `参考下方`.
 - `自查说明`: known risks, intended changes, reviewer notes.
 
 ## Audit Workflow
@@ -87,25 +88,70 @@ Use `assets/audit-input.zh.yaml` as the canonical template. Accept Markdown with
 Return reports in Chinese:
 
 ```text
-审核结论：通过 / 有风险 / 高风险 / 信息不足
+审核结论：
+- 结论：通过 / 有风险 / 高风险 / 信息不足
+- 风险等级：低 / 中 / 高
+- 建议动作：可提交 / 修改后提交 / 补齐材料后复审 / 暂不建议提交
+- 一句话摘要：用一句话说明最主要风险或通过原因。
 
-高优先级问题：
-- [高风险] 问题描述
+命中规范范围：
+- 已检查：列出实际使用的官方规范名称。
+- 未覆盖：列出因材料缺失而无法判断的规范范围。
+
+资料完整度：
+- 基础信息：完整 / 缺失 xxx
+- 提审文案：完整 / 缺失 xxx
+- 素材文件：完整 / 缺失 xxx
+- 资质材料：完整 / 缺失 xxx
+- 工程/构建目录：已检查 / 未提供 / 不适用
+
+高风险问题：
+- [高风险] 问题标题
+  位置：对应字段、文件路径或素材名称
   依据：官方规范名称
-  建议：可直接修改的做法或文案
+  影响：为什么可能阻塞提审
+  建议：可执行修改方案
 
-中低优先级问题：
-- ...
+中风险问题：
+- [有风险] 问题标题
+  位置：对应字段、文件路径或素材名称
+  依据：官方规范名称
+  影响：可能造成驳回、人工修正或二次修改成本
+  建议：可执行修改方案
+
+低风险建议：
+- [建议] 优化点
+  依据：官方规范名称或经验判断
+  建议：优化方案
 
 缺失材料：
-- ...
+- 材料名称：为什么需要、建议放置路径或填写位置
 
-可直接替换文案：
-- 简介：...
-- 详细介绍：...
+素材检查结果：
+- 图标：通过 / 有风险 / 未提供
+- 截图：通过 / 有风险 / 未提供
+- 视频封面：通过 / 有风险 / 未提供
+- 宣传视频：通过 / 有风险 / 未提供
+- 说明：只列关键发现，不重复完整素材清单。
+
+文案修改建议：
+- 一句话简介：
+  - 原文：...
+  - 建议：...
+- 详细介绍：
+  - 原文风险：...
+  - 建议文案：...
+- 更新说明：
+  - 建议：...
+
+下一步处理建议：
+1. 先处理会阻塞提审的高风险问题。
+2. 补齐缺失材料并重新保存 audit-input.yaml。
+3. 再次运行 `启动抖音提审` 做复审。
 
 已保存输入：
-- 路径：...
+- 输入路径：...
+- 报告路径：如已保存则填写；未保存则写“未保存”。
 ```
 
 ## Risk Rules

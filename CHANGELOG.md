@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 - 2026-07-01
+
+- Improve the Chinese YAML audit template with explicit local path fields for icons, screenshots, covers, videos, and compliance files.
+- Add word-count guidance and examples for submission copy fields.
+- Add official option references for category, theme, art style, and age rating.
+- Add inline reference hints that point users to the relevant option sections inside the YAML template.
+
 ## 0.2.1 - 2026-07-01
 
 - Add Chinese trigger phrases to `SKILL.md` discovery metadata.
