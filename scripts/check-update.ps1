@@ -58,24 +58,6 @@ $stateRoot = Join-Path $env:LOCALAPPDATA "douyin-minigame-audit"
 $stateFile = Join-Path $stateRoot "update-check.json"
 New-Item -ItemType Directory -Force -Path $stateRoot | Out-Null
 
-$today = (Get-Date).ToString("yyyy-MM-dd")
-if (-not $Force -and (Test-Path -LiteralPath $stateFile)) {
-    try {
-        $state = Get-Content -LiteralPath $stateFile -Raw | ConvertFrom-Json
-        if ($state.last_check_date -eq $today) {
-            Write-Result "skipped_today" @{
-                local_version = $localVersion.ToString()
-                last_check_date = $state.last_check_date
-                message = "Update check already ran today."
-            }
-            exit 0
-        }
-    }
-    catch {
-        # Ignore corrupt state and check again.
-    }
-}
-
 $remoteVersionUrl = "https://raw.githubusercontent.com/$Owner/$Repo/$Branch/VERSION"
 $archiveUrl = "https://github.com/$Owner/$Repo/archive/refs/heads/$Branch.zip"
 
@@ -86,7 +68,7 @@ try {
     catch {
         if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 404) {
             $stateData = [ordered]@{
-                last_check_date = $today
+                last_check_date = (Get-Date).ToString("yyyy-MM-dd")
                 local_version = $localVersion.ToString()
                 remote_version = $null
                 checked_at = (Get-Date).ToString("s")
@@ -106,7 +88,7 @@ try {
     $remoteVersion = ConvertTo-Version $remoteVersionText
 
     $stateData = [ordered]@{
-        last_check_date = $today
+        last_check_date = (Get-Date).ToString("yyyy-MM-dd")
         local_version = $localVersion.ToString()
         remote_version = $remoteVersion.ToString()
         checked_at = (Get-Date).ToString("s")

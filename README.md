@@ -79,7 +79,7 @@ To save an input manually:
 powershell -ExecutionPolicy Bypass -File .\scripts\save-audit-input.ps1 -InputFile audit-input.yaml -ProjectName "游戏名称" -ProjectAliases "简称,AppID"
 ```
 
-## Daily Update Check
+## Every Trigger Update Check
 
 The skill includes:
 
@@ -87,7 +87,7 @@ The skill includes:
 scripts/check-update.ps1
 ```
 
-On the first use each local day, the skill checks GitHub for a newer `VERSION`. If an update is installed, restart Codex or the current AI client. After restarting, return to the conversation and say `继续` to resume the unfinished audit flow from the saved input/state.
+On every trigger, the skill checks GitHub for a newer `VERSION`. If an update is installed, restart Codex or the current AI client. After restarting, return to the conversation and say `继续` to resume the unfinished audit flow from the saved input/state.
 
 ## Package a Release
 

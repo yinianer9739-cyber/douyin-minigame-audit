@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 - 2026-07-02
+
+- Change update checks from once per local day to every skill trigger.
+- Remove the `skipped_today` short-circuit from `scripts/check-update.ps1`.
+- Keep update-check state recording for troubleshooting without using it to skip checks.
+
 ## 0.3.1 - 2026-07-02
 
 - Add sidebar revisit as a required Douyin mini-game ability check.

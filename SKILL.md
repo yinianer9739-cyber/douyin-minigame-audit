@@ -9,15 +9,15 @@ description: Use when reviewing Douyin/TikTok China mini-game submission materia
 
 先建档，再审计。Audit the actual submission package first, then use project scanning only as supporting evidence. Do not treat a full Unity, Godot, or HTML project as a substitute for the final backend submission text and assets.
 
-## Daily Update Check
+## Every Trigger Update Check
 
-At the start of the first `douyin-minigame-audit` use each local day, run:
+At the start of every `douyin-minigame-audit` trigger, run:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "<skill-dir>/scripts/check-update.ps1" -Install
 ```
 
-- If the script reports `up_to_date` or `skipped_today`, continue normally.
+- If the script reports `up_to_date`, continue normally.
 - If it reports `installed`, stop and tell the user that a newer skill was installed, Codex/current AI client must be restarted, and after restarting they can return and say `继续`.
 - If it reports `remote_version_missing` or `failed`, continue with the local version and mention the issue briefly.
 
