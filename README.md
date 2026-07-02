@@ -10,6 +10,7 @@ It focuses on Chinese YAML/Markdown submission inputs, asset package folders, an
 - Submission copy: short description, detailed description, update notes, keywords.
 - Assets: icon, screenshots, video covers, promo videos, posters, loading images.
 - Gameplay and capabilities: login, sharing, ranking, chat, UGC, location, privacy, minors, multiplayer.
+- Required platform abilities: sidebar revisit ability and related API/project scan signals such as `tt.navigateToScene`.
 - Monetization: ads, IAP, CPA/CPT/CPM/CPS anchors, traffic promotion, game station, Jianying template.
 - Compliance materials: software copyright, filing materials, privacy policy, user agreement, authorization files.
 - Optional project scan: Unity, Godot, or HTML/Web project directory.
@@ -58,6 +59,7 @@ The YAML template includes:
 
 - Explicit local path fields such as `图标路径`, `截图路径列表`, `视频封面路径列表`, `宣传视频路径列表`, `资料包目录路径`, and `工程项目目录路径`.
 - Copywriting guidance, including short description length hints and a 120-300 character detailed description hint.
+- Required ability fields, including `是否接入侧边栏复访能力`.
 - Official option references for game category, theme, art style, and age rating.
 - Inline hints such as `参考下方：官方选项参考 > 题材可选` for fields that should be selected from official options.
 

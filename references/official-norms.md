@@ -28,6 +28,8 @@ Official base path: `https://developer.open-douyin.com/docs/resource/zh-CN/mini-
 | 18 | 剪映模板审核规则 | https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/operation1/norms/examine-verify | 剪映模板、模板素材、推广内容 |
 | 19 | 合集类游戏货不对板内容指引标准 | https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/operation1/norms/game-content-standard | 合集游戏、玩法一致性、素材货不对板 |
 | 20 | 关于小游戏违规代运营的防骗提醒 | https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/operation1/norms/scam-alert | 代运营风险、防骗提醒 |
+| 21 | 必接能力 | https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/guide/minigame/essential-skills | 必接能力总览、侧边栏复访是否拦截上传 |
+| 22 | 侧边栏复访能力 | https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/operation1/user-ops/-retention/sidebar | 侧边栏复访运营要求、接入说明、Q&A |
 
 ## 选择规则
 
@@ -41,6 +43,7 @@ Official base path: `https://developer.open-douyin.com/docs/resource/zh-CN/mini-
 - Include 18 when Jianying template promotion is submitted.
 - Include 19 for collection/合集 games, mixed gameplay packs, mini-game boxes, or materials that may not match real gameplay.
 - Include 20 when the user asks about agency operation or third-party代运营.
+- Always include 21 and 22 for ordinary first submission or version update because sidebar revisit is a required ability for Douyin mini-games.
 
 ## Local Summary Is Not Authority
 

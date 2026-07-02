@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1 - 2026-07-02
+
+- Add sidebar revisit as a required Douyin mini-game ability check.
+- Add YAML/Markdown input fields for `是否接入侧边栏复访能力` and related notes.
+- Add project scan signals for `tt.navigateToScene`, scene handling, sidebar, and revisit keywords.
+- Add official `必接能力` and `侧边栏复访能力` documentation entries to the norms index.
+- Mark missing sidebar revisit as a high-risk issue for ordinary first submissions and version updates.
+
 ## 0.3.0 - 2026-07-01
 
 - Add a first-trigger intake gate so bare trigger phrases ask whether this is a new or existing project instead of producing an empty audit result.

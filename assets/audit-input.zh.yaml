@@ -80,6 +80,9 @@
   是否聊天: false
   是否UGC: false
   是否分享: false
+  # sidebar_revisit_required: 抖音小游戏必接能力；需通过官方接口完成侧边栏复访引导与回访识别。
+  是否接入侧边栏复访能力: false
+  侧边栏复访说明: ""
   是否定位: false
   是否登录: true
   是否收集个人信息: false

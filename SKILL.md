@@ -85,7 +85,7 @@ Use `assets/audit-input.zh.yaml` as the canonical template. Accept Markdown with
 - `目录`: `资料包目录路径`, `工程项目目录路径`, `构建产物目录路径`.
 - `提审文案`: `一句话简介`, `详细介绍`, update notes, keywords.
 - `素材`: icon, screenshots, video covers, promo videos, loading images, posters.
-- `能力与玩法`: ads, IAP, login, ranking, share, chat, UGC, location, payment/privacy collection, minors, multiplayer.
+- `能力与玩法`: ads, IAP, login, ranking, share, sidebar revisit, chat, UGC, location, payment/privacy collection, minors, multiplayer.
 - `资质与合规`: software copyright, ISBN/approval document, filing materials, privacy policy, user agreement, authorization files, business license/entity files.
 - `运营与变现`: CPA/CPT/CPM/CPS anchors, advertising game, in-game purchase game, traffic promotion, game station, Jianying template.
 - `自查说明`: known risks, intended changes, reviewer notes, unknown owner-dependent materials.
@@ -102,6 +102,16 @@ Use `assets/audit-input.zh.yaml` as the canonical template. Accept Markdown with
    - HTML/Web: `package.json`, `src/`, `public/`, build output, ad/payment/login SDK imports.
 6. Visually inspect icon/screenshots/video covers when available.
 7. Produce a risk-ranked report only after there is usable project input.
+
+## Sidebar Revisit Required Ability
+
+For ordinary first submissions and version updates, always check the Douyin required sidebar revisit ability.
+
+- YAML/input check: look for `是否接入侧边栏复访能力` and `侧边栏复访说明`.
+- Official scope: include `必接能力` and `侧边栏复访能力` from `references/official-norms.md`.
+- Project scan signals: when a project directory is available, search for `tt.navigateToScene`, `navigateToScene`, `checkScene`, `getLaunchOptionsSync`, `onShow`, `scene`, `sidebar`, `侧边栏`, and `复访`.
+- Evidence rule: if the YAML says it is connected but project scan has no sidebar/API signal, report `待工程确认` and ask for the SDK integration file or runtime evidence.
+- Risk rule: if sidebar revisit is missing, false, or clearly not connected for a first submission/version update, mark it `高风险` because the required ability may block upload or review.
 
 ## Unknown Or Legal-Owned Materials
 
@@ -135,6 +145,11 @@ Return reports in Chinese:
 - 素材文件：完整 / 缺失 xxx
 - 资质材料：完整 / 缺失 xxx
 - 工程/构建目录：已检查 / 未提供 / 不适用
+
+必接能力检查：
+- 侧边栏复访能力：已接入 / 未接入 / 待工程确认 / 未提供信息
+- 证据：YAML 字段、代码扫描命中、或缺失说明
+- 影响：未接入可能导致版本上传/提审被拦截
 
 缺失资料与责任方：
 - 资料名称：为什么需要；建议责任方：研发 / 运营 / 法务 / 商务 / 财务 / 发行；不提供时影响什么判断。
@@ -191,7 +206,7 @@ Return reports in Chinese:
 
 ## Risk Rules
 
-- Mark as `高风险` when the issue likely blocks review: missing required qualification that is required for the declared submission type, name mismatch with soft copyright/filing, forbidden icon content, external diversion, misleading gameplay, illegal content, gambling/pornographic/bloody content, unapproved payment, serious minors/privacy issue, or ad/IAP rule conflict.
+- Mark as `高风险` when the issue likely blocks review: missing required qualification that is required for the declared submission type, name mismatch with soft copyright/filing, forbidden icon content, external diversion, misleading gameplay, illegal content, gambling/pornographic/bloody content, unapproved payment, serious minors/privacy issue, ad/IAP rule conflict, or sidebar revisit is missing.
 - Mark as `有风险` when the issue may trigger rejection or manual correction: vague description, category mismatch, screenshots not showing real gameplay, wording exaggeration, age rating mismatch, incomplete update notes, unclear anchor video relationship, or missing optional evidence.
 - Mark as `信息不足` when the project may be compliant but the submitted backend fields/assets are absent.
 - Separate `已提供内容合格` from final approval when mandatory company/legal materials are missing.
