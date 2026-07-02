@@ -41,6 +41,11 @@ Common Chinese trigger phrases:
 帮我审核抖音小游戏
 ```
 
+第一次触发时不会立即审计（will not immediately produce an audit）。技能会先询问这是新项目还是旧项目：
+
+- 新项目：先填写或粘贴 `assets/audit-input.zh.yaml`，至少提供游戏名称和一个资料来源。
+- 旧项目：提供游戏全称、项目简称、AppID 或内部代号，技能会优先加载已保存的项目档案。
+
 ## Typical Input
 
 Use the Chinese YAML template:
@@ -59,10 +64,18 @@ The YAML template includes:
 Recommended saved location for a real project:
 
 ```text
-<资料包目录>/.douyin-minigame-audit/audit-input.yaml
+<资料包目录>/.douyin-minigame-audit/projects/<项目名称>/audit-input.yaml
 ```
 
-On later audits, you can say `继续` and provide only changed fields. The skill will look for saved audit input/state under `.douyin-minigame-audit/`.
+On later audits, you can say `继续` or provide a project nickname. The skill will look for saved audit input/state under `.douyin-minigame-audit/projects/` first, then legacy `.douyin-minigame-audit/`.
+
+If some compliance materials belong to legal, operations, business, finance, or publishing teams, leave them blank and list them under `待补资料`. The report will separate missing materials from the judgment on already provided content.
+
+To save an input manually:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\save-audit-input.ps1 -InputFile audit-input.yaml -ProjectName "游戏名称" -ProjectAliases "简称,AppID"
+```
 
 ## Daily Update Check
 

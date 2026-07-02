@@ -4,7 +4,9 @@ param(
 
     [string]$PackageDir,
     [string]$ProjectDir,
-    [string]$OutputDir
+    [string]$OutputDir,
+    [string]$ProjectName,
+    [string]$ProjectAliases
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,6 +31,24 @@ function Resolve-ExistingDirectory {
     return $null
 }
 
+function ConvertTo-Slug {
+    param([string]$Value)
+    if ([string]::IsNullOrWhiteSpace($Value)) {
+        return $null
+    }
+
+    $normalized = $Value.Trim().ToLowerInvariant()
+    $normalized = $normalized -replace "[\\/:*?`"<>|]", "-"
+    $normalized = $normalized -replace "\s+", "-"
+    $normalized = $normalized -replace "-+", "-"
+    $normalized = $normalized.Trim("-")
+
+    if ([string]::IsNullOrWhiteSpace($normalized)) {
+        return "unnamed-project"
+    }
+    return $normalized
+}
+
 $base = Resolve-ExistingDirectory $OutputDir
 if ($null -eq $base) {
     $base = Resolve-ExistingDirectory $PackageDir
@@ -40,7 +60,13 @@ if ($null -eq $base) {
     $base = (Get-Location).Path
 }
 
-$stateDir = Join-Path $base ".douyin-minigame-audit"
+$rootStateDir = Join-Path $base ".douyin-minigame-audit"
+if ([string]::IsNullOrWhiteSpace($ProjectName)) {
+    $stateDir = $rootStateDir
+} else {
+    $projectSlug = ConvertTo-Slug $ProjectName
+    $stateDir = Join-Path (Join-Path $rootStateDir "projects") $projectSlug
+}
 New-Item -ItemType Directory -Force -Path $stateDir | Out-Null
 
 $targetName = if ($ext -in @(".md", ".markdown")) { "audit-input.md" } else { "audit-input.yaml" }
@@ -51,6 +77,12 @@ $meta = [ordered]@{
     saved_at = (Get-Date).ToString("s")
     input_file = (Resolve-Path -LiteralPath $InputFile).Path
     saved_file = $target
+    project_name = $ProjectName
+    project_aliases = @(
+        if (-not [string]::IsNullOrWhiteSpace($ProjectAliases)) {
+            $ProjectAliases -split "," | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+        }
+    )
     package_dir = $PackageDir
     project_dir = $ProjectDir
 }

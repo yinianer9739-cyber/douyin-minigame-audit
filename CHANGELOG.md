@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 - 2026-07-01
+
+- Add a first-trigger intake gate so bare trigger phrases ask whether this is a new or existing project instead of producing an empty audit result.
+- Save audit inputs under project-scoped state directories using project names and aliases.
+- Add project nickname fields to the Chinese YAML/Markdown templates.
+- Separate missing legal/company-owned materials from the compliance judgment for already provided content.
+- Add a contract test for the skill workflow and persistence rules.
+
 ## 0.2.2 - 2026-07-01
 
 - Improve the Chinese YAML audit template with explicit local path fields for icons, screenshots, covers, videos, and compliance files.

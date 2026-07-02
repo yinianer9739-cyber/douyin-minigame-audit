@@ -7,7 +7,7 @@ description: Use when reviewing Douyin/TikTok China mini-game submission materia
 
 ## Core Principle
 
-Audit the actual submission package first, then use project scanning only as supporting evidence. Do not treat a full Unity, Godot, or HTML project as a substitute for the final backend submission text and assets.
+先建档，再审计。Audit the actual submission package first, then use project scanning only as supporting evidence. Do not treat a full Unity, Godot, or HTML project as a substitute for the final backend submission text and assets.
 
 ## Daily Update Check
 
@@ -17,71 +17,102 @@ At the start of the first `douyin-minigame-audit` use each local day, run:
 powershell -ExecutionPolicy Bypass -File "<skill-dir>/scripts/check-update.ps1" -Install
 ```
 
-- If the script reports `up_to_date`, continue normally.
-- If the script reports `installed`, stop the audit flow and tell the user:
-  - A newer `douyin-minigame-audit` was downloaded and installed.
-  - Codex or the current AI client must be restarted to load the new skill files.
-  - After restarting, return to this conversation and say `继续`; the skill will reuse saved audit input/state and continue the unfinished flow.
-- If the script reports `skipped_today`, continue normally.
-- If the script reports `remote_version_missing`, continue normally and mention that the remote repository has not published `VERSION` yet.
-- If the script reports `failed`, continue the audit with the local version and mention the update-check failure briefly.
+- If the script reports `up_to_date` or `skipped_today`, continue normally.
+- If it reports `installed`, stop and tell the user that a newer skill was installed, Codex/current AI client must be restarted, and after restarting they can return and say `继续`.
+- If it reports `remote_version_missing` or `failed`, continue with the local version and mention the issue briefly.
 
-Before installing an update, preserve active audit state by saving the current YAML/Markdown input with `scripts/save-audit-input.ps1` when practical.
+Before installing an update, preserve active audit state with `scripts/save-audit-input.ps1` when practical.
 
 ## Required Source Loading
 
 - Read `references/official-norms.md` before every audit.
-- If the user asks for the latest official rule, or if a finding depends on exact current wording, verify against the official Douyin Open Platform URLs in `references/official-norms.md`.
-- For icons, screenshots, posters, and video covers, visually inspect the local files when paths are available.
+- If the user asks for the latest official rule, or a finding depends on exact current wording, verify against the official Douyin Open Platform URLs in `references/official-norms.md`.
+- For icons, screenshots, posters, and video covers, visually inspect local files when paths are available.
 - If the user provides only a project folder, ask for or create an audit input file because backend fields cannot be inferred reliably from source code.
+
+## 首次触发闸门 (First Touch Gate)
+
+When the user only says a trigger phrase such as `启动抖音提审`, `抖音小游戏提审`, `检查抖音过审风险`, or otherwise provides no YAML/Markdown/path/materials:
+
+1. Ask whether this is a new project or existing project first: 先问用户是新项目还是更新旧项目，禁止在空输入时直接输出审核结论。
+2. Explain briefly that the audit needs a project audit file first, and offer the YAML/Markdown template.
+3. If the user says this is an old project, ask for the official project name or project nickname / 项目简称, then search saved state before asking them to refill.
+4. If the user says this is a new project, ask for the game/project name first, then ask them to fill or paste the template. Do not audit until at least basic project identity and one material source are present.
+
+Recommended first response:
+
+```text
+我先帮你建提审档案，不会现在就下审核结论。
+这是新项目首次提审，还是旧项目版本更新/复审？
+如果是旧项目，请给我游戏全称或常用简称；如果是新项目，请先给游戏名称，我会按模板引导你补资料。
+```
+
+## Project State And Matching
+
+- 按项目名称保存 audit input under `.douyin-minigame-audit/projects/<project-slug>/audit-input.yaml` or `.md`.
+- Keep compatibility with legacy `.douyin-minigame-audit/audit-input.yaml` and `.md`.
+- Store `project_name` and `project_aliases` in `last-save.json`; aliases may include 项目简称, app id, internal codename, or common Chinese abbreviation.
+- When resuming an old project, search by exact name first, then case-insensitive/space-insensitive substring match across folder names, `project_name`, and `project_aliases`.
+- If multiple saved projects match a 项目简称, ask the user to choose instead of guessing.
+- If no saved project matches, say that no local audit file was found for that name and continue as a new project setup.
+
+Use the helper when practical:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "<skill-dir>/scripts/save-audit-input.ps1" -InputFile audit-input.yaml -ProjectName "游戏名称" -ProjectAliases "简称,内部代号"
+```
 
 ## Input Priority
 
 1. If the user provides a YAML or Markdown audit input, use it as the primary input.
-2. If the input names `资料包目录` or `工程项目目录`, look for saved files in:
-   - `<资料包目录>/.douyin-minigame-audit/audit-input.yaml`
-   - `<资料包目录>/.douyin-minigame-audit/audit-input.md`
-   - `<工程项目目录>/.douyin-minigame-audit/audit-input.yaml`
-   - `<工程项目目录>/.douyin-minigame-audit/audit-input.md`
-3. If no new input is provided, search the current workspace and likely project/package folders for `.douyin-minigame-audit/audit-input.yaml` or `.douyin-minigame-audit/audit-input.md`.
-4. If both saved input and new input exist, merge conceptually with this turn's user-provided values taking precedence. Preserve unknown previous fields unless the user explicitly removes them.
+2. If the input names `资料包目录路径` or `工程项目目录路径`, look for project-scoped and legacy saved files under those directories.
+3. If the user gives a project name or 项目简称, search project-scoped saved inputs before scanning generic directories.
+4. If no usable input exists, enter the 首次触发闸门; do not output an audit report.
+5. If both saved input and new input exist, merge conceptually with this turn's user-provided values taking precedence. Preserve unknown previous fields unless the user explicitly removes them.
 
 ## Saving Behavior
 
-- When the user provides a complete or partial Chinese YAML/Markdown audit input, save a copy unless they say not to.
-- Prefer saving under `资料包目录/.douyin-minigame-audit/`.
-- If no package directory exists but `工程项目目录` exists, save under `工程项目目录/.douyin-minigame-audit/`.
-- If neither directory exists, save under the current workspace `.douyin-minigame-audit/`.
-- Use `scripts/save-audit-input.ps1` for deterministic saving when practical.
-- Tell the user where the saved file is, so future audits can reuse it.
-- When resuming after restart, search for saved audit input and `last-report.md`/`session-state.md` in `.douyin-minigame-audit/`, then continue from the last unfinished step.
+- When the user provides complete or partial Chinese YAML/Markdown audit input, save a copy unless they say not to.
+- Prefer saving under the project-scoped state directory in the package dir, then project dir, then current workspace.
+- Always include project name when known. If the game name is missing, ask for it before saving as a reusable project file.
+- Tell the user the saved path so future audits can reuse it.
 
 ## Expected Chinese YAML Shape
 
 Use `assets/audit-input.zh.yaml` as the canonical template. Accept Markdown with equivalent headings, but normalize mentally to these sections:
 
-- `游戏信息`: `游戏名称`, `软著名称`, `备案名称`, `版号名称`, `版本号`, engine, platform, official category levels, theme, art style, and age rating.
-- `提审文案`: `一句话简介`, `详细介绍`, update notes, keywords, and copywriting length hints.
-- `目录`: local path fields such as `资料包目录路径`, `工程项目目录路径`, and `构建产物目录路径`.
-- `素材`: local path fields such as `图标路径`, `截图路径列表`, `视频封面路径列表`, `宣传视频路径列表`, `加载图路径`, and `海报路径列表`.
-- `能力与玩法`: ads, IAP, login, ranking, share, chat, UGC, location, payment, privacy collection, minors, multiplayer.
-- `资质与合规`: local path fields for software copyright, ISBN/approval document, filing materials, business licenses, privacy policy, user agreement, and authorization files.
+- `游戏信息`: `游戏名称`, `项目简称`, `软著名称`, `备案名称`, `版号名称`, `版本号`, engine/platform, official category levels, theme, art style, age rating.
+- `目录`: `资料包目录路径`, `工程项目目录路径`, `构建产物目录路径`.
+- `提审文案`: `一句话简介`, `详细介绍`, update notes, keywords.
+- `素材`: icon, screenshots, video covers, promo videos, loading images, posters.
+- `能力与玩法`: ads, IAP, login, ranking, share, chat, UGC, location, payment/privacy collection, minors, multiplayer.
+- `资质与合规`: software copyright, ISBN/approval document, filing materials, privacy policy, user agreement, authorization files, business license/entity files.
 - `运营与变现`: CPA/CPT/CPM/CPS anchors, advertising game, in-game purchase game, traffic promotion, game station, Jianying template.
-- `官方选项参考`: official reference options for category, theme, art style, and age rating; use it to interpret fields that say `参考下方`.
-- `自查说明`: known risks, intended changes, reviewer notes.
+- `自查说明`: known risks, intended changes, reviewer notes, unknown owner-dependent materials.
 
 ## Audit Workflow
 
 1. Identify the submission type: first launch, version update, basic info change, filing, anchor video, advertising game, in-app purchase game, traffic promotion, game station, or Jianying template.
 2. Load the official norms index and map the submission type to relevant norms.
-3. Validate required fields and assets from the YAML/Markdown.
+3. Validate required fields and assets from YAML/Markdown.
 4. Inspect the asset package directory if present.
 5. Scan the project directory only for supporting signals:
    - Unity: `ProjectSettings/ProjectVersion.txt`, `Packages/manifest.json`, `Assets/`, WebGL/minigame SDK folders, privacy/ad/payment/login SDK indicators.
    - Godot: `project.godot`, `export_presets.cfg`, `addons/`, exported web/minigame folders.
    - HTML/Web: `package.json`, `src/`, `public/`, build output, ad/payment/login SDK imports.
 6. Visually inspect icon/screenshots/video covers when available.
-7. Produce a risk-ranked report.
+7. Produce a risk-ranked report only after there is usable project input.
+
+## Unknown Or Legal-Owned Materials
+
+Some materials may be outside the user's role. For example, a developer may not know soft copyright files, filing materials, business license, authorization agreements, ISBN/approval documents, privacy policy legal wording, or payment qualifications.
+
+- Do not mark provided gameplay/code/assets as failing because legal/company materials are missing.
+- Put unavailable company/legal materials under `缺失资料与责任方`.
+- If a material is needed to decide a specific rule, mark that rule as `无法判断` or `待法务/运营补充`, not as a rejection of known content.
+- If all provided content appears compliant within the available evidence, explicitly say `已提供内容合格；未提供资料仍需补齐后才能形成最终提审结论`.
+- If the user says a material cannot be provided, report the scope honestly: `基于已提供内容合格，但缺少 xxx，无法覆盖 xxx 规范`.
+- Use this report section name for these items: `缺失资料与责任方 (Missing Materials And Owners)`.
 
 ## Report Format
 
@@ -92,10 +123,10 @@ Return reports in Chinese:
 - 结论：通过 / 有风险 / 高风险 / 信息不足
 - 风险等级：低 / 中 / 高
 - 建议动作：可提交 / 修改后提交 / 补齐材料后复审 / 暂不建议提交
-- 一句话摘要：用一句话说明最主要风险或通过原因。
+- 一句话摘要：...
 
 命中规范范围：
-- 已检查：列出实际使用的官方规范名称。
+- 已检查：...
 - 未覆盖：列出因材料缺失而无法判断的规范范围。
 
 资料完整度：
@@ -105,16 +136,23 @@ Return reports in Chinese:
 - 资质材料：完整 / 缺失 xxx
 - 工程/构建目录：已检查 / 未提供 / 不适用
 
+缺失资料与责任方：
+- 资料名称：为什么需要；建议责任方：研发 / 运营 / 法务 / 商务 / 财务 / 发行；不提供时影响什么判断。
+
+已提供内容判断：
+- 已提供内容合格 / 已提供内容存在风险 / 已提供内容信息不足
+- 说明：只评价实际已看到的 YAML、文件、素材、项目扫描结果。
+
 高风险问题：
 - [高风险] 问题标题
-  位置：对应字段、文件路径或素材名称
+  位置：字段、路径或素材名
   依据：官方规范名称
   影响：为什么可能阻塞提审
   建议：可执行修改方案
 
 中风险问题：
 - [有风险] 问题标题
-  位置：对应字段、文件路径或素材名称
+  位置：字段、路径或素材名
   依据：官方规范名称
   影响：可能造成驳回、人工修正或二次修改成本
   建议：可执行修改方案
@@ -123,9 +161,6 @@ Return reports in Chinese:
 - [建议] 优化点
   依据：官方规范名称或经验判断
   建议：优化方案
-
-缺失材料：
-- 材料名称：为什么需要、建议放置路径或填写位置
 
 素材检查结果：
 - 图标：通过 / 有风险 / 未提供
@@ -146,7 +181,7 @@ Return reports in Chinese:
 
 下一步处理建议：
 1. 先处理会阻塞提审的高风险问题。
-2. 补齐缺失材料并重新保存 audit-input.yaml。
+2. 让对应责任方补齐缺失资料。
 3. 再次运行 `启动抖音提审` 做复审。
 
 已保存输入：
@@ -156,14 +191,16 @@ Return reports in Chinese:
 
 ## Risk Rules
 
-- Mark as `高风险` when the issue likely blocks review: missing required qualification, name mismatch with soft copyright/filing, forbidden icon content, external diversion, misleading gameplay, illegal content, gambling/pornographic/bloody content, unapproved payment, serious minors/privacy issue, or ad/IAP rule conflict.
+- Mark as `高风险` when the issue likely blocks review: missing required qualification that is required for the declared submission type, name mismatch with soft copyright/filing, forbidden icon content, external diversion, misleading gameplay, illegal content, gambling/pornographic/bloody content, unapproved payment, serious minors/privacy issue, or ad/IAP rule conflict.
 - Mark as `有风险` when the issue may trigger rejection or manual correction: vague description, category mismatch, screenshots not showing real gameplay, wording exaggeration, age rating mismatch, incomplete update notes, unclear anchor video relationship, or missing optional evidence.
 - Mark as `信息不足` when the project may be compliant but the submitted backend fields/assets are absent.
+- Separate `已提供内容合格` from final approval when mandatory company/legal materials are missing.
 
 ## Common Mistakes
 
 - Do not audit only the basic information document; the scope includes all official norms listed in `references/official-norms.md`.
-- Do not assume `工程项目目录` contains the final icon, screenshots, or backend text.
+- Do not assume the project directory contains the final icon, screenshots, or backend text.
 - Do not approve images without visual inspection when paths are available.
-- Do not silently ignore saved input; reuse it on later runs and ask only for missing deltas.
+- Do not silently ignore saved input; reuse project-scoped saved input and ask only for missing deltas.
 - Do not invent official rules. If unsure, cite the norm title and ask to verify the exact current wording from the official URL.
+- Do not produce a report immediately after a bare trigger phrase; guide the user into new/old project setup first.
